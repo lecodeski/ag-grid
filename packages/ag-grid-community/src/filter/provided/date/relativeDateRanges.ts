@@ -65,14 +65,14 @@ const setStartOfNextMonth: RelativeDateFn = (date: Date) => {
 };
 const setStartOfQuarter: RelativeDateFn = (date: Date) => {
     const quarter = Math.floor(date.getMonth() / 3); // [0, 3]
-    date.setMonth(quarter * 3);
-    return setStartOfMonth(date);
+    date.setMonth(quarter * 3, 1);
+    return setStartOfDay(date);
 };
 
 const setStartOfNextQuarter: RelativeDateFn = (date: Date) => {
     const quarter = Math.floor(date.getMonth() / 3); // [0, 3]
-    date.setMonth(quarter * 3 + 2);
-    return setStartOfNextMonth(date);
+    date.setMonth(quarter * 3 + 3, 1);
+    return setStartOfDay(date);
 };
 
 const setStartOfYear: RelativeDateFn = (date: Date) => {
@@ -137,13 +137,13 @@ const nextYear: RelativeRangeFn = (from: Date, to: Date) => {
     return thisYear(from, to);
 };
 const nextQuarter: RelativeRangeFn = (from: Date, to: Date) => {
-    from.setMonth(from.getMonth() + 3);
-    to.setMonth(to.getMonth() + 3);
+    from.setMonth(from.getMonth() + 3, 1);
+    to.setMonth(to.getMonth() + 3, 1);
     return thisQuarter(from, to);
 };
 const nextMonth: RelativeRangeFn = (from: Date, to: Date) => {
-    from.setMonth(from.getMonth() + 1);
-    to.setMonth(to.getMonth() + 1);
+    from.setMonth(from.getMonth() + 1, 1);
+    to.setMonth(to.getMonth() + 1, 1);
     return thisMonth(from, to);
 };
 const nextWeek: RelativeRangeFn = (from: Date, to: Date) => {

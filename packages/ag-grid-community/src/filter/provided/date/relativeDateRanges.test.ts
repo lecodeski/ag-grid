@@ -116,6 +116,29 @@ describe('relative date ranges', () => {
     );
 });
 
+// `setMonth` keeps the day of the month, so on a day the target month lacks, the date rolls over into the
+// month after it.
+describe('relative date ranges at the end of a month', () => {
+    // A date-time without an offset is local time.
+    const localDate = (isoDate: string, time = '00:00') => new Date(`${isoDate}T${time}`);
+
+    it.each<{ preset: PresetKey; today: string; from: string; to: string }>([
+        { preset: 'thisQuarter', today: '2026-05-31', from: '2026-04-01', to: '2026-07-01' },
+        { preset: 'thisQuarter', today: '2026-07-31', from: '2026-07-01', to: '2026-10-01' },
+        { preset: 'thisQuarter', today: '2026-08-31', from: '2026-07-01', to: '2026-10-01' },
+        { preset: 'lastQuarter', today: '2026-05-31', from: '2026-01-01', to: '2026-04-01' },
+        { preset: 'nextQuarter', today: '2026-03-31', from: '2026-04-01', to: '2026-07-01' },
+        { preset: 'nextQuarter', today: '2026-05-31', from: '2026-07-01', to: '2026-10-01' },
+        { preset: 'nextMonth', today: '2026-01-29', from: '2026-02-01', to: '2026-03-01' },
+        { preset: 'nextMonth', today: '2028-01-31', from: '2028-02-01', to: '2028-03-01' },
+        { preset: 'nextMonth', today: '2026-10-31', from: '2026-11-01', to: '2026-12-01' },
+    ])('$preset on $today is [$from, $to)', ({ preset, today, from, to }) => {
+        const now = () => localDate(today, '12:00');
+        const range = presetDateFilterTypeRelativeFromToMap[preset](now(), now());
+        expect(range).toStrictEqual([localDate(from), localDate(to)]);
+    });
+});
+
 describe('getFirstDayOfWeek', () => {
     const base = new Date('2020-04-08T12:34:56.000Z');
     const originalLocale = (Intl as any).Locale;
